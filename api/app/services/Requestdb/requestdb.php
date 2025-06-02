@@ -13,11 +13,6 @@ class RequestDataBase
         $this->core = $db->getConnetion();
     }
 
-    function db()
-    {
-        return $this->core;
-    }
-
     public function SelectAll()
     {
 
@@ -30,7 +25,7 @@ class RequestDataBase
 
     public function Insert()
     {
-        
+
     }
 
     public function Update()
