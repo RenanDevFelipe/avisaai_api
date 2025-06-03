@@ -9,7 +9,19 @@ class ResponseReturn
             'message' => $message
         ];
 
-        return $return;
+        echo json_encode($return);
+        exit;
+    }
+
+    public static function ReturnResult($total, $registros)
+    {
+        $return = [
+            'total' => $total,
+            'registros' => $registros
+        ];
+
+        echo json_encode($return);
+        exit;
     }
 }
 

@@ -18,6 +18,11 @@ if ($uri == "Account/Login")
    
 }
 
+elseif ($uri == "User/Create")
+{
+    $userControl->createUser($method);
+}
+
 elseif ($uri == "User/getAll")
 {
     $userControl->getAll($method);
