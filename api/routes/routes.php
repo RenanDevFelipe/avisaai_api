@@ -1,4 +1,10 @@
-<?php 
+<?php
+
+require_once __DIR__ . '/../app/controllers/users/userControl.php';
+
+// DECLARAR VARIAVEIS PARA OS CONTROLLS
+$userControl = new userControl;
+
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -9,10 +15,12 @@ $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
 
 if ($uri == "Account/Login")
 {
-    echo json_encode([
-        'status' => 'success',
-        'message' => 'Api Funcionando'
-    ]);
+   
+}
+
+elseif ($uri == "User/getAll")
+{
+    $userControl->getAll($method);
 }
 
 ?>

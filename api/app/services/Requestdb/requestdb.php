@@ -13,9 +13,26 @@ class RequestDataBase
         $this->core = $db->getConnetion();
     }
 
-    public function SelectAll()
+    public function SelectAll($table)
     {
+        try {
 
+            $select = "SELECT * FROM $table";
+            $stmt = $this->core->prepare($select);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return [
+                'total' => $stmt->rowCount(),
+                'registros' => $result
+            ];
+
+        } catch(PDOException $error){
+            return [
+                'status' => 'error',
+                'message' => 'Erro no banco de dados: ' . $error->getMessage()
+            ];
+        }
     }
 
     public function SelectWhere()

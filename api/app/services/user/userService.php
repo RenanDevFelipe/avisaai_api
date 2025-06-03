@@ -3,10 +3,11 @@
 require_once __DIR__ . '/../../../config/core.php';
 require_once __DIR__ . '/../../helpers/Headers.php';
 require_once __DIR__ . '/../Requestdb/requestdb.php';
+require_once __DIR__ . '/../../helpers/Returns.php';
 Headers::AllHeaders();
 
 
-class user
+class userService
 {
 
     private $request;
@@ -16,7 +17,7 @@ class user
         $this->request = new RequestDataBase;
     }
     
-    public function create_user($method)
+    public function createUser($method)
     {
         try{
 
@@ -65,6 +66,18 @@ class user
                 'message' => 'Erro no banco de dados: ' . $e->getMessage()
             ];
         }
+    }
+
+    public function getAllUser($method)
+    {
+        if ($method !== "GET")
+        {
+            return ResponseReturn::ReturnRequest('error', 'Requisição inválida');
+        }
+
+        $getAll = $this->request->SelectAll('users');
+
+        return $getAll;
     }
 }
 
