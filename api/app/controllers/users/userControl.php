@@ -18,6 +18,18 @@ class userControl{
         ResponseHelper::jsonResponse($data);
     }
 
+    public function updateUser($method)
+    {
+        $data = $this->service->updateUser($method);
+        ResponseHelper::jsonResponse($data);
+    }
+
+    public function deleteUser($method, $id)
+    {
+        $data = $this->service->deleteUser($method, $id);
+        ResponseHelper::jsonResponse($data);
+    }
+
     public function getAll($method)
     {
         $data = $this->service->getAllUser($method);

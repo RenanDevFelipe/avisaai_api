@@ -1,10 +1,11 @@
 <?php
 
 require_once __DIR__ . '/../app/controllers/users/userControl.php';
+require_once __DIR__ . '/../app/helpers/FilesContents.php';
 
 // DECLARAR VARIAVEIS PARA OS CONTROLLS
 $userControl = new userControl;
-
+$filesContent = new FilesContents;
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -23,9 +24,32 @@ elseif ($uri == "User/Create")
     $userControl->createUser($method);
 }
 
+elseif ($uri == "User/Update")
+{
+    $userControl->updateUser($method);
+}
+
+elseif ($uri == "User/Delete")
+{
+    $data = $filesContent->phpContent();
+    FilesContents::ErrorJson($data);
+    $userControl->deleteUser($method, $data['id']);
+}
+
 elseif ($uri == "User/getAll")
 {
     $userControl->getAll($method);
 }
 
+elseif ($uri == "User/getOne")
+{   
+    $data = $filesContent->phpContent();
+    FilesContents::ErrorJson($data);
+    $userControl->getOneUser($method, $data['id']);
+}
+
+
+else{
+    echo json_encode(ResponseReturn::ReturnRequest('error', 'Rota inexistente'));
+}
 ?>

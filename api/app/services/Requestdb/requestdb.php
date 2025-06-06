@@ -2,9 +2,9 @@
 
 require_once __DIR__ . "/../../../config/core.php";
 require_once __DIR__ . "/../../helpers/Returns.php";
+
 class RequestDataBase
 {
-
     private $core;
 
     public function __construct()
@@ -13,24 +13,25 @@ class RequestDataBase
         $this->core = $db->getConnetion();
     }
 
+    function db()
+    {
+        return $this->core;
+    }
+
     public function SelectAll($table)
     {
-        try {
+        $sql = "SELECT * FROM $table";
 
-            $select = "SELECT * FROM $table";
-            $stmt = $this->core->prepare($select);
+        try {
+            $stmt = $this->core->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $total = $stmt->rowCount();
 
-            return [
-                'total' => $stmt->rowCount(),
-                'registros' => $result
-            ];
+            return ResponseReturn::ReturnResult($total, $result);
         } catch (PDOException $error) {
-            return [
-                'status' => 'error',
-                'message' => 'Erro no banco de dados: ' . $error->getMessage()
-            ];
+            $e = 'Erro no banco de dados: ' . $error->getMessage();
+            return ResponseReturn::ReturnRequest('error', $e);
         }
     }
 
@@ -66,15 +67,17 @@ class RequestDataBase
 
             return ResponseReturn::ReturnResult($total, $result);
         } catch (PDOException $error) {
-            $e = 'Erro no banco de dados' . $error->getMessage();
+            $e = 'Erro no banco de dados: ' . $error->getMessage();
             return ResponseReturn::ReturnRequest('error', $e);
         }
     }
 
     public function Insert($table, $data)
+
     {
-        if (empty($data)) {
-            ResponseReturn::ReturnRequest('error', 'Dados do insert não pode ser vazio');
+        if (empty($data)) 
+        {
+            return ResponseReturn::ReturnRequest('error', 'Dados do insert não podem ser vazios');
         }
 
         $columns = array_keys($data);
@@ -89,19 +92,19 @@ class RequestDataBase
         try {
             $stmt = $this->core->prepare($sql);
             $stmt->execute($values);
-            return $this->core->lastInsertId();
+            $lastId = $this->core->lastInsertId();
+
+            return ResponseReturn::ReturnRequest('success', 'Registro inserido com sucesso', ['id' => $lastId]);
         } catch (PDOException $e) {
-            return ['error' => $e->getMessage()];
+            $error = 'Erro no banco de dados: ' . $e->getMessage();
+            return ResponseReturn::ReturnRequest('error', $error);
         }
     }
 
     public function Update($table, $data, $conditions)
     {
-        if (empty($data)) {
-            return ['error' => 'Dados para atualização não podem estar vazios.'];
-        }
-        if (empty($conditions)) {
-            return ['error' => 'Nenhuma condição especificada para WHERE.'];
+        if (empty($data) || empty($conditions)) {
+            return ResponseReturn::ReturnRequest('error', 'Dados ou condições não podem ser vazios');
         }
 
         $set = [];
@@ -113,15 +116,10 @@ class RequestDataBase
         }
 
         $where = [];
+
         foreach ($conditions as $column => $value) {
-            if (is_array($value)) {
-                $placeholders = implode(', ', array_fill(0, count($value), '?'));
-                $where[] = "$column IN ($placeholders)";
-                $params = array_merge($params, $value);
-            } else {
-                $where[] = "$column = ?";
-                $params[] = $value;
-            }
+            $where[] = "$column = ?";
+            $params[] = $value;
         }
 
         $set_str = implode(', ', $set);
@@ -132,31 +130,27 @@ class RequestDataBase
         try {
             $stmt = $this->core->prepare($sql);
             $stmt->execute($params);
-            return true;
+            $rowCount = $stmt->rowCount();
+
+            return ResponseReturn::ReturnRequest('success', "Registro atualizado com sucesso ($rowCount registro(s) afetado(s))");
         } catch (PDOException $e) {
-            return ['error' => $e->getMessage()];
+            $error = 'Erro no banco de dados: ' . $e->getMessage();
+            return ResponseReturn::ReturnRequest('error', $error);
         }
     }
-
 
     public function Delete($table, $conditions)
     {
         if (empty($conditions)) {
-            return ['error' => 'Nenhuma condição especificada para WHERE. DELETE perigoso foi bloqueado.'];
+            return ResponseReturn::ReturnRequest('error', 'Condições para exclusão não podem ser vazias');
         }
 
         $where = [];
         $params = [];
 
         foreach ($conditions as $column => $value) {
-            if (is_array($value)) {
-                $placeholders = implode(', ', array_fill(0, count($value), '?'));
-                $where[] = "$column IN ($placeholders)";
-                $params = array_merge($params, $value);
-            } else {
-                $where[] = "$column = ?";
-                $params[] = $value;
-            }
+            $where[] = "$column = ?";
+            $params[] = $value;
         }
 
         $where_str = implode(' AND ', $where);
@@ -166,9 +160,12 @@ class RequestDataBase
         try {
             $stmt = $this->core->prepare($sql);
             $stmt->execute($params);
-            return true;
+            $rowCount = $stmt->rowCount();
+
+            return ResponseReturn::ReturnRequest('success', "Registro deletado com sucesso ($rowCount registro(s) removido(s))");
         } catch (PDOException $e) {
-            return ['error' => $e->getMessage()];
+            $error = 'Erro no banco de dados: ' . $e->getMessage();
+            return ResponseReturn::ReturnRequest('error', $error);
         }
     }
 }
