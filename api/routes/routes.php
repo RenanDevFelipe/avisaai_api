@@ -19,6 +19,8 @@ if ($uri == "Account/Login")
    
 }
 
+/// *************************************************************** USER ROUTE *************************************************************** \\\
+
 elseif ($uri == "User/Create")
 {
     $userControl->createUser($method);
@@ -48,6 +50,7 @@ elseif ($uri == "User/getOne")
     $userControl->getOneUser($method, $data['id']);
 }
 
+/// *************************************************************** USER ROUTE *************************************************************** \\\
 
 else{
     echo json_encode(ResponseReturn::ReturnRequest('error', 'Rota inexistente'));
