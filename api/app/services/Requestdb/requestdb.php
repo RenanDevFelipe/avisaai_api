@@ -73,10 +73,8 @@ class RequestDataBase
     }
 
     public function Insert($table, $data)
-
     {
-        if (empty($data)) 
-        {
+        if (empty($data)) {
             return ResponseReturn::ReturnRequest('error', 'Dados do insert não podem ser vazios');
         }
 
