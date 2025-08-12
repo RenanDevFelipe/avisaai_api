@@ -68,6 +68,8 @@ class AccountService
 
         } catch (PDOException $e){
             return ResponseReturn::ReturnRequest('error', 'Erro no banco de dados: ' . $e->getMessage());
+        } catch (Exception $e){
+            return ResponseReturn::ReturnRequest('error', 'Erro inesperado' . $e->getMessage());
         }
     }
 }
