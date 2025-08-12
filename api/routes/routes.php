@@ -1,10 +1,12 @@
 <?php
 
 require_once __DIR__ . '/../app/controllers/users/userControl.php';
+require_once __DIR__ . '/../app/controllers/users/accountControl.php';
 require_once __DIR__ . '/../app/helpers/FilesContents.php';
 
 // DECLARAR VARIAVEIS PARA OS CONTROLLS
 $userControl = new userControl;
+$accountControl = new accountControl;
 $filesContent = new FilesContents;
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -14,10 +16,18 @@ $uri = str_replace(['/avisaai_api/api/public', '/avisaai_api/api'], '', $uri);
 $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
 
 
+
+/// *************************************************************** ACCOUNT ROUTE ****************************************************************** \\\
+
 if ($uri == "Account/Login")
 {
-   
+    $accountControl->Login($method);
 }
+
+/// *************************************************************** ACCOUNT ROUTE ****************************************************************** \\\
+
+
+
 
 /// *************************************************************** USER ROUTE *************************************************************** \\\
 
@@ -51,6 +61,10 @@ elseif ($uri == "User/getOne")
 }
 
 /// *************************************************************** USER ROUTE *************************************************************** \\\
+
+
+
+
 
 else{
     echo json_encode(ResponseReturn::ReturnRequest('error', 'Rota inexistente'));

@@ -4,7 +4,8 @@ require_once __DIR__ . '/../../services/user/userService.php';
 require_once __DIR__ . '/../../helpers/ResponseHelper.php';
 
 
-class userControl{
+class userControl
+{
     private $service;
 
     public function __construct()

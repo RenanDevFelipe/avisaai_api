@@ -1,8 +1,11 @@
 <?php
 
-require_once __DIR__ . '../../../utils/jwt/JWT.php';
-require_once __DIR__ . '../../../utils/jwt/Key.php';
-require_once __DIR__ . '/../../config/DataBase/config.php';
+// require_once __DIR__ . '../../../utils/jwt/JWT.php';
+// require_once __DIR__ . '../../../utils/jwt/Key.php';
+
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/jwt/JWT.php';
+require_once __DIR__ . '/../utils/jwt/Key.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
